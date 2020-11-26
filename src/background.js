@@ -1,8 +1,9 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, Menu, Tray } from 'electron'
+import { app, protocol, BrowserWindow, Menu, Tray, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { autoUpdater } from 'electron-updater'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -93,3 +94,40 @@ if (!gotTheLock) {
     win.focus()
   })
 }
+
+/**
+ * 自动更新
+ */
+const feedUrl = 'https://yz-cache.oss-cn-shanghai.aliyuncs.com/js/yixiaoer'
+
+ipcMain.on('check-update', () => {
+  autoUpdater.setFeedURL(feedUrl)
+
+  //执行自动更新检查
+  autoUpdater.checkForUpdates()
+
+  autoUpdater.on('error', (event, message) => {
+    event.reply('error', message)
+  })
+
+  autoUpdater.on('checking-for-update', (event, message) => {
+    event.reply('checking-for-update', message)
+  })
+
+  autoUpdater.on('update-not-available', (event, message) => {
+    event.reply('update-not-available', message)
+  })
+
+  // 更新下载进度事件
+  autoUpdater.on('download-progress', event => {
+    event.reply('download-progress', event)
+  })
+
+  // 更新下载完成事件
+  autoUpdater.on('update-downloaded', event => {
+    event.reply('isUpdateNow')
+    ipcMain.on('updateNow', () => {
+      autoUpdater.quitAndInstall()
+    })
+  })
+})
