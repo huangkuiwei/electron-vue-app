@@ -107,25 +107,25 @@ ipcMain.on('check-update', () => {
   autoUpdater.checkForUpdates()
 
   autoUpdater.on('error', (event, message) => {
-    event.reply('error', message)
+    win.webContents.send('error', message)
   })
 
   autoUpdater.on('checking-for-update', (event, message) => {
-    event.reply('checking-for-update', message)
+    win.webContents.send('checking-for-update', message)
   })
 
   autoUpdater.on('update-not-available', (event, message) => {
-    event.reply('update-not-available', message)
+    win.webContents.send('update-not-available', message)
   })
 
   // 更新下载进度事件
   autoUpdater.on('download-progress', event => {
-    event.reply('download-progress', event)
+    win.webContents.send('download-progress', event)
   })
 
   // 更新下载完成事件
   autoUpdater.on('update-downloaded', event => {
-    event.reply('isUpdateNow')
+    win.webContents.send('isUpdateNow')
     ipcMain.on('updateNow', () => {
       autoUpdater.quitAndInstall()
     })

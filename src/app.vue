@@ -10,7 +10,10 @@ const { ipcRenderer } = window.require('electron')
 export default {
   name: 'app',
   mounted() {
-    ipcRenderer.send('check-update')
+    setTimeout(() => {
+      console.log('check-update')
+      ipcRenderer.send('check-update')
+    }, 1000)
 
     ipcRenderer.on('error', (event, args) => {
       console.log('更新失败')
