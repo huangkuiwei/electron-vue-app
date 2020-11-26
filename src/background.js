@@ -104,7 +104,7 @@ ipcMain.on('check-update', () => {
   autoUpdater.setFeedURL(feedUrl)
 
   //执行自动更新检查
-  autoUpdater.checkForUpdates()
+  autoUpdater.checkForUpdates().then(() => {})
 
   autoUpdater.on('error', (event, message) => {
     win.webContents.send('error', message)
@@ -124,7 +124,7 @@ ipcMain.on('check-update', () => {
   })
 
   // 更新下载完成事件
-  autoUpdater.on('update-downloaded', event => {
+  autoUpdater.on('update-downloaded', () => {
     win.webContents.send('isUpdateNow')
     ipcMain.on('updateNow', () => {
       autoUpdater.quitAndInstall()
