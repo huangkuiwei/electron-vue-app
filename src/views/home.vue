@@ -20,15 +20,6 @@ export default {
       getPreloadUrl
     }
   },
-  created() {
-    this.$http
-      .post('http://localhost:3000', {
-        name: 'huang'
-      })
-      .then(data => {
-        console.log(data)
-      })
-  },
   mounted() {
     this.$nextTick(() => {
       const webview = document.getElementById('webview')
